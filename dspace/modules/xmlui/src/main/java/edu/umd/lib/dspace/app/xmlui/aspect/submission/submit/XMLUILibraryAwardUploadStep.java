@@ -200,19 +200,33 @@ public class XMLUILibraryAwardUploadStep extends AbstractSubmissionStep
 
             // dropdown
             Select selectDesc = upload.addItem().addSelect("description");
-            ArrayList<String> requiredBitstreams = (ArrayList<String>) LibraryAwardUploadStep.requiredBitstreams;
-
-            for (Bitstream bitstream : bitstreams)
-            {
-                requiredBitstreams.remove(requiredBitstreams.indexOf(bitstream
-                        .getDescription()));
-
-            }
+            java.util.List<String> requiredBitstreams = LibraryAwardUploadStep.requiredBitstreams;
+            Boolean bitstreamExists;
 
             for (String desc : requiredBitstreams)
             {
-                selectDesc.addOption(desc).addContent(desc);
+                bitstreamExists = false;
+                if (bitstreams.length > 0)
+                {
+                    for (Bitstream bitstream : bitstreams)
+                    {
+                        if (desc.equalsIgnoreCase(bitstream.getDescription()))
+                        {
+                            bitstreamExists = true;
+                            break;
+                        }
+                    }
+                    if (!bitstreamExists)
+                    {
+                        selectDesc.addOption(desc).addContent(desc);
+                    }
+                }
+                else
+                {
+                    selectDesc.addOption(desc).addContent(desc);
+                }
             }
+
             selectDesc.setRequired();
 
             File file = upload.addItem().addFile("file");
